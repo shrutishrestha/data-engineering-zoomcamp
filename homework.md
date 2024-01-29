@@ -55,9 +55,10 @@ Tip: started and finished on 2019-09-18.
 
 Remember that `lpep_pickup_datetime` and `lpep_dropoff_datetime` columns are in the format timestamp (date and hour+min+sec) and not in date.
 
+```console
 SELECT COUNT(*) FROM green_tripdata WHERE lpep_pickup_datetime >= '2019-09-18 00:00:00'
    AND lpep_pickup_datetime < '2019-09-19 00:00:00' and lpep_dropoff_datetime >= '2019-09-18 00:00:00' and lpep_dropoff_datetime < '2019-09-19 00:00:00';
-
+```
 
 - 15612
 
@@ -67,7 +68,7 @@ Which was the pick up day with the longest trip distance?
 Use the pick up time for your calculations.
 
 Tip: For every trip on a single day, we only care about the trip with the longest distance. 
-
+```console
 root@localhost:ny_taxi> SELECT 
      DATE(lpep_pickup_datetime) AS pickup_day,
      SUM(trip_distance) AS total_distance
@@ -84,7 +85,7 @@ root@localhost:ny_taxi> SELECT
 | 2019-09-26 | 58759.9400000002 |
 
 - 2019-09-26
-
+```
 
 
 ## Question 5. Three biggest pick up Boroughs
@@ -92,7 +93,7 @@ root@localhost:ny_taxi> SELECT
 Consider lpep_pickup_datetime in '2019-09-18' and ignoring Borough has Unknown
 
 Which were the 3 pick up Boroughs that had a sum of total_amount superior to 50000?
- 
+ ```console
   select
      z."Borough",
      sum(t.total_amount) total_amount
@@ -114,7 +115,7 @@ SELECT 3
 Time: 0.094s
 
 - "Brooklyn" "Manhattan" "Queens"
-
+```
 
 ## Question 6. Largest tip
 
@@ -122,7 +123,7 @@ For the passengers picked up in September 2019 in the zone name Astoria which wa
 We want the name of the zone, not the id.
 
 Note: it's not a typo, it's `tip` , not `trip`
-
+```console
  SELECT 
      z_dropoff."Zone" ,
     t.tip_amount AS Tip
@@ -147,8 +148,7 @@ Note: it's not a typo, it's `tip` , not `trip`
 
 - JFK Airport
 
-
-
+```
 
 ## Terraform
 
@@ -170,12 +170,12 @@ terraform apply
 ```
 
 Paste the output of this command into the homework submission form.
-
+```console
 google_bigquery_dataset.demo_dataset: Creating...
 google_storage_bucket.bucket: Creating...
 google_bigquery_dataset.demo_dataset: Creation complete after 1s [id=projects/**]
 google_storage_bucket.bucket: Creation complete after 1s [id=**]
-
+```
 
 ## Submitting the solutions
 
