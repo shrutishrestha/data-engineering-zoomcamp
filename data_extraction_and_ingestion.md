@@ -1,0 +1,133 @@
+1. Use a generator
+Remember the concept of generator? Let's practice using them to futher our understanding of how they work.
+
+Let's define a generator and then run it as practice.
+
+Answer the following questions:
+```
+Question 1: What is the sum of the outputs of the generator for limit = 5?
+
+def square_root_generator(limit):
+    n = 1
+    while n <= limit:
+        yield n ** 0.5
+        n += 1
+
+# Example usage:
+limit = 5
+generator = square_root_generator(limit)
+sum_value=0
+for sqrt_value in generator:
+    sum_value+=sqrt_value
+print("sum_value",sum_value)
+```
+
+Question 2: What is the 13th number yielded
+
+def square_root_generator(limit):
+    n = 1
+    while n <= limit:
+        yield n ** 0.5
+        n += 1
+
+# Example usage:
+limit = 13
+generator = square_root_generator(limit)
+sum_value=0
+for sqrt_value in generator:
+  print("sqrt_value", sqrt_value)
+
+
+2. Append a generator to a table with existing data
+Below you have 2 generators. You will be tasked to load them to duckdb and answer some questions from the data
+
+1. Load the first generator and calculate the sum of ages of all people. Make sure to only load it once.
+```
+import dlt
+
+generators_pipeline = dlt.pipeline(destination='duckdb', dataset_name='generators')
+info = generators_pipeline.run(people_1(),
+                               table_name="people1",
+                               write_disposition="replace")
+```
+2. Append the second generator to the same table as the first.
+```
+import dlt
+
+generators_pipeline = dlt.pipeline(destination='duckdb', dataset_name='generators')
+info = generators_pipeline.run(people_2(),
+                               table_name="people1",
+                               write_disposition="append")
+print(info)
+```
+3. Merge a generator
+
+Re-use the generators from Exercise 2.
+
+A table's primary key needs to be created from the start, so load your data to a new table with primary key ID.
+
+Load your first generator first, and then load the second one with merge. Since they have overlapping IDs, some of the records from the first load should be replaced by the ones from the second load.
+
+After loading, you should have a total of 8 records, and ID 3 should have age 33.
+
+Question: Calculate the sum of ages of all the people loaded as described above.
+
+
+```
+generators_pipeline = dlt.pipeline(destination='duckdb', dataset_name='generators')
+info = generators_pipeline.run(people_1(),
+                               table_name="merged_people",
+                               primary_key="ID",
+                               write_disposition="merge")
+
+generators_pipeline = dlt.pipeline(destination='duckdb', dataset_name='generators')
+info = generators_pipeline.run(people_2(),
+                               table_name="merged_people",
+                               primary_key="ID",
+                               write_disposition="merge")
+```
+```
+import duckdb
+conn = duckdb.connect(f"{generators_pipeline.pipeline_name}.duckdb")
+conn.sql(f"SET search_path = '{generators_pipeline.dataset_name}'")
+print('Loaded tables:')
+
+count_total = conn.sql("SELECT count(*) FROM merged_people").df()
+display(count_total)
+
+
+Loaded tables:
+count_star()
+0	8
+```
+```
+import duckdb
+conn = duckdb.connect(f"{generators_pipeline.pipeline_name}.duckdb")
+conn.sql(f"SET search_path = '{generators_pipeline.dataset_name}'")
+print('Loaded tables:')
+
+count_total = conn.sql("SELECT * FROM merged_people where ID=3").df()
+display(count_total)
+
+Loaded tables:
+id	name	age	city	_dlt_load_id	_dlt_id	occupation
+0	3	Person_3	33	City_B	1708319608.2654123	AC6etC1lREVp/g	Job_3
+
+```
+
+```
+Question 4. Merge the 2 generators using the ID column. Calculate the sum of ages of all the people loaded as described above. (1 point)
+
+import duckdb
+conn = duckdb.connect(f"{generators_pipeline.pipeline_name}.duckdb")
+conn.sql(f"SET search_path = '{generators_pipeline.dataset_name}'")
+print('Loaded tables:')
+
+count_total = conn.sql("SELECT sum(age) FROM merged_people").df()
+display(count_total)
+
+Loaded tables:
+sum(age)
+0	266.0
+```
+
