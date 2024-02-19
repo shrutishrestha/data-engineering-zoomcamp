@@ -130,7 +130,11 @@ print('Loaded tables:')
 sum_of_ages = conn.sql("SELECT sum(age) FROM people").df()
 display(sum_of_ages)
 ```
-
+```
+Loaded tables:
+sum(age)
+0	353.0
+```
 3. Merge a generator
 
 Re-use the generators from Exercise 2.
